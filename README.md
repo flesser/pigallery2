@@ -1,3 +1,8 @@
+This is a quick&dirty hacked fork supporting trashing of images.
+
+It has to be enabled by setting `Client.Trash.enabled = true` in `config.json`.
+
+
 # PiGallery2 
 [![npm version](https://badge.fury.io/js/pigallery2.svg)](https://badge.fury.io/js/pigallery2)
 [![Build Status](https://travis-ci.org/bpatrik/pigallery2.svg?branch=master)](https://travis-ci.org/bpatrik/pigallery2)
