@@ -203,6 +203,11 @@ export class GalleryService {
     return this.networkService.getJson<SharingDTO>('/share/' + sharingKey);
   }
 
+  public async trashImage(mediaPath: string): Promise<void> {
+    return this.networkService.deleteJson('/gallery/content/' + mediaPath).then(() => {
+        this.loadDirectory(this.content.value.directory.path + this.content.value.directory.name).catch(console.error);
+    });
+  }
 
   isSearchResult(): boolean {
     return !!this.content.value.searchResult;

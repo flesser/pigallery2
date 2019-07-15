@@ -20,6 +20,8 @@ export class GalleryRouter {
     this.addRandom(app);
     this.addDirectoryList(app);
 
+    this.addTrashImage(app);
+
     this.addSearch(app);
     this.addInstantSearch(app);
     this.addAutoComplete(app);
@@ -122,6 +124,17 @@ export class GalleryRouter {
       GalleryMWs.loadFile,
       ThumbnailGeneratorMWs.generateIconFactory(ThumbnailSourceType.Image),
       RenderingMWs.renderFile
+    );
+  }
+
+  private static addTrashImage(app: Express) {
+    app.delete('/api/gallery/content/:mediaPath(*\.(jpg|jpeg|jpe|webp|png|gif|svg|mp4|ogg|ogv|webm))',
+      AuthenticationMWs.authenticate,
+      AuthenticationMWs.authorise(UserRoles.Admin),
+      AuthenticationMWs.normalizePathParam('mediaPath'),
+      AuthenticationMWs.authorisePath('mediaPath', false),
+      GalleryMWs.trashFile,
+      RenderingMWs.renderOK
     );
   }
 

@@ -39,6 +39,9 @@ export class MediaIcon {
       this.media.directory.path, this.media.directory.name, this.media.name);
   }
 
+  isInTrash() {
+    return this.media.directory.name === Config.Client.Trash.trashFolderName;
+  }
 
   equals(other: MediaDTO | MediaIcon): boolean {
     // is gridphoto

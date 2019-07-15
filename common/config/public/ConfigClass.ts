@@ -72,6 +72,11 @@ export module ClientConfig {
     writeAccessMinRole: UserRoles;
   }
 
+  export interface TrashConfig {
+    enabled: boolean;
+    trashFolderName: string;
+  }
+
   export interface Config {
     applicationTitle: string;
     publicUrl: string;
@@ -88,6 +93,7 @@ export module ClientConfig {
     Video: VideoConfig;
     MetaFile: MetaFileConfig;
     Faces: FacesConfig;
+    Trash: TrashConfig;
   }
 
 }
@@ -150,6 +156,10 @@ export class PublicConfigClass {
       enabled: true,
       keywordsToPersons: true,
       writeAccessMinRole: UserRoles.Admin
+    },
+    Trash: {
+      enabled: false,
+      trashFolderName: '_pigallery2_trash'
     },
     authenticationRequired: true,
     unAuthenticatedUserRole: UserRoles.Admin,

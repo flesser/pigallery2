@@ -72,6 +72,10 @@ export class SettingsService {
           keywordsToPersons: true,
           writeAccessMinRole: UserRoles.Admin
         },
+        Trash: {
+          enabled: false,
+          trashFolderName: '_pigallery2_trash',
+        },
         urlBase: '',
         publicUrl: '',
         applicationTitle: '',

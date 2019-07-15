@@ -179,6 +179,51 @@ export class GalleryMWs {
   }
 
 
+  public static trashFile(req: Request, res: Response, next: NextFunction) {
+    if (!(Config.Client.Trash.enabled)) {
+      return next(new ErrorDTO(ErrorCodes.GENERAL_ERROR, 'trash support is disabled'));
+    }
+    if (!(req.params.mediaPath)) {
+      return next();
+    }
+    const fullMediaPath = path.join(ProjectPath.ImageFolder, req.params.mediaPath);
+
+    // check if image exist
+    if (fs.existsSync(fullMediaPath) === false) {
+      return next(new ErrorDTO(ErrorCodes.GENERAL_ERROR, 'no such file:' + fullMediaPath));
+    }
+    if (fs.statSync(fullMediaPath).isDirectory()) {
+      return next(new ErrorDTO(ErrorCodes.GENERAL_ERROR, 'cannot trash directory!'));
+    }
+
+    if (path.dirname(fullMediaPath).endsWith(Config.Client.Trash.trashFolderName)) {
+      // return next(new ErrorDTO(ErrorCodes.GENERAL_ERROR, 'file is already in trash!'));
+      // restore image by moving it up one directory level
+      const fullParentPath = path.join(path.dirname(fullMediaPath), '..', path.basename(fullMediaPath))
+      fs.rename(fullMediaPath, fullParentPath, (err_mv) => {
+        if (err_mv) {
+          return next(new ErrorDTO(ErrorCodes.GENERAL_ERROR, 'error restoring file from trash folder:' + err_mv));
+        }
+      });
+    } else {
+      // move file to thrash subfolder
+      const trashFolder = path.join(path.dirname(fullMediaPath), Config.Client.Trash.trashFolderName);
+      const fullTrashPath = path.join(trashFolder, path.basename(fullMediaPath));
+      fs.mkdir(trashFolder, {recursive: true}, (err_mkdir) => {
+        if (err_mkdir) {
+          return next(new ErrorDTO(ErrorCodes.GENERAL_ERROR, 'error creating trash folder:' + err_mkdir));
+        }
+        fs.rename(fullMediaPath, fullTrashPath, (err_mv) => {
+          if (err_mv) {
+            return next(new ErrorDTO(ErrorCodes.GENERAL_ERROR, 'error moving file to trash folder:' + err_mv));
+          }
+        });
+      });
+    }
+    return next();
+  }
+
+
   public static async search(req: Request, res: Response, next: NextFunction) {
     if (Config.Client.Search.enabled === false) {
       return next();

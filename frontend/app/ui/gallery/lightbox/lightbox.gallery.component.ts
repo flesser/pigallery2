@@ -445,6 +445,9 @@ export class GalleryLightboxComponent implements OnDestroy, OnInit {
           this.mediaElement.playPause();
         }
         break;
+      case 'Delete': // move to trash
+        this.trashImage();
+        break;
     }
   }
 
@@ -513,14 +516,31 @@ export class GalleryLightboxComponent implements OnDestroy, OnInit {
 
 
   public toggleInfoPanel() {
-
-
     if (this.infoPanelWidth !== 400) {
       this.showInfoPanel();
     } else {
       this.hideInfoPanel();
     }
+  }
 
+  public trashImage() {
+    const confirmMsg = this.activePhoto.gridPhoto.isInTrash() ?
+      `Restore '${this.activePhoto.gridPhoto.getRelativePath()}' (moving it up one directory)?` :
+      `Move '${this.activePhoto.gridPhoto.getRelativePath()}' to trash?`;
+
+    if (confirm(confirmMsg)) {
+      this.galleryService.trashImage(this.activePhoto.gridPhoto.getRelativePath()).then(() => {
+        if (this.navigation.hasNext) {
+          this.nextImage();
+        } else if (this.navigation.hasPrev) {
+          this.prevImage();
+        } else {
+          this.hide();
+        }
+      }).catch((err) => {
+        alert('Error: ' + err.message);
+      });
+    }
   }
 
   hideInfoPanel(_animate: boolean = true) {

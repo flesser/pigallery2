@@ -21,6 +21,16 @@
     [ngClass]="(controllersDimmed && !controllersAlwaysOn) ? (activePhoto && activePhoto.gridPhoto.isVideo() ? 'dim-controls-video' :'dim-controls'):  ''">
     <div class="controls-caption" *ngIf="Title">{{Title}}</div>
     <div class="controls controls-top">
+      <div *ngIf="activePhoto && !activePhoto.gridPhoto.isInTrash()" class="highlight control-button" (click)="trashImage()"
+           title="move to trash, key: del" i18n-title>
+        <span class="oi oi-trash"></span>
+      </div>
+
+      <div *ngIf="activePhoto && activePhoto.gridPhoto.isInTrash()" class="highlight control-button" (click)="trashImage()"
+           title="restore from trash, key: del" i18n-title>
+        <span class="oi oi-action-undo"></span>
+      </div>
+
       <a *ngIf="activePhoto"
          class="highlight control-button"
          [href]="activePhoto.gridPhoto.getPhotoPath()"
@@ -30,7 +40,7 @@
       </a>
 
       <div class=" highlight control-button" (click)="toggleInfoPanel()"
-           title="info key: i" i18n-title>
+           title="info, key: i" i18n-title>
         <span class="oi oi-info"></span>
       </div>
 
